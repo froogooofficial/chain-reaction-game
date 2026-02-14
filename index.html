@@ -600,9 +600,17 @@ function getLinkedInText() {
   return lines.filter(l => l !== undefined).join('\n');
 }
 function shareLinkedIn() {
-  const text = encodeURIComponent(getLinkedInText());
   const url = encodeURIComponent(window.location.href);
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, '_blank');
+  const appUrl = `linkedin://shareArticle?mini=true&url=${url}`;
+  const webUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+  let appOpened = false;
+  const onBlur = () => { appOpened = true; window.removeEventListener('blur', onBlur); };
+  window.addEventListener('blur', onBlur);
+  window.location.href = appUrl;
+  setTimeout(() => {
+    window.removeEventListener('blur', onBlur);
+    if (!appOpened) window.open(webUrl, '_blank');
+  }, 1500);
 }
 function shareTwitter() {
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank');
