@@ -74,6 +74,17 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 @keyframes shakeGrid{0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(2px,-3px)}75%{transform:translate(-2px,1px)}}
 .grid-wrap.shake{animation:shakeGrid .25s ease-out}
 
+/* LOGO IMAGE */
+.logo-img{width:200px;height:200px;border-radius:20px;margin-bottom:0.5rem;box-shadow:0 0 30px rgba(0,119,181,0.3)}
+
+/* LIGHTNING CANVAS */
+#lightning-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:20}
+
+/* EXPLOSION FLASH */
+.cell.lightning-flash{transition:box-shadow .1s}
+.cell.lightning-flash.p1{box-shadow:0 0 12px 4px rgba(0,119,181,0.6),inset 0 0 8px rgba(77,168,218,0.3)}
+.cell.lightning-flash.p2{box-shadow:0 0 12px 4px rgba(231,163,62,0.6),inset 0 0 8px rgba(245,204,132,0.3)}
+
 /* RESULT */
 #result-screen{display:none}
 .result-emoji{font-size:4rem;margin-bottom:0.5rem}
@@ -99,9 +110,8 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 
 <!-- START SCREEN -->
 <div id="start-screen">
-  <div class="logo">⚡</div>
-  <h1>Chain Reaction</h1>
-  <p class="sub">Explosive strategy in quick rounds</p>
+  <img src="og-image.jpg" alt="Chain Reaction" class="logo-img">
+  <p class="sub" style="margin-top:0.5rem">Outsmart the AI. Trigger the chain. ⚡</p>
   <div class="rules-box">
     <b>🔵 You</b> vs <b style="color:#E7A33E">🟡 AI</b><br>
     Tap to place orbs in cells.<br>
@@ -122,6 +132,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
     <div class="hud-player p2" id="hud-p2"><span class="orb-count" id="count-p2">0</span> 🟡</div>
   </div>
   <div class="grid-wrap" id="grid-wrap">
+    <canvas id="lightning-canvas"></canvas>
     <div class="grid" id="grid"></div>
   </div>
   <div class="turn-banner" id="turn-banner">Your turn — tap a cell</div>
@@ -375,6 +386,124 @@ function renderBoard() {
 // ===== ANIMATED EXPLOSIONS =====
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ===== LIGHTNING EFFECTS =====
+const lCanvas = $('lightning-canvas');
+const lCtx = lCanvas ? lCanvas.getContext('2d') : null;
+let lightningBolts = [];
+
+function resizeLightningCanvas() {
+  if (!lCanvas) return;
+  lCanvas.width = gridWrap.offsetWidth;
+  lCanvas.height = gridWrap.offsetHeight;
+}
+
+function drawLightningBolt(ctx, x1, y1, x2, y2, color, glow, thickness) {
+  const segments = 8 + Math.floor(Math.random() * 5);
+  const dx = (x2 - x1) / segments;
+  const dy = (y2 - y1) / segments;
+  const jitter = Math.sqrt((x2-x1)**2 + (y2-y1)**2) * 0.15;
+  
+  ctx.save();
+  // Outer glow
+  ctx.shadowColor = glow;
+  ctx.shadowBlur = 15;
+  ctx.strokeStyle = glow;
+  ctx.lineWidth = thickness + 4;
+  ctx.globalAlpha = 0.4;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  let px = x1, py = y1;
+  for (let i = 1; i <= segments; i++) {
+    const nx = i === segments ? x2 : x1 + dx * i + (Math.random() - 0.5) * jitter;
+    const ny = i === segments ? y2 : y1 + dy * i + (Math.random() - 0.5) * jitter;
+    ctx.lineTo(nx, ny);
+    px = nx; py = ny;
+  }
+  ctx.stroke();
+  
+  // Core bolt
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = color;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = thickness;
+  ctx.globalAlpha = 0.9;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  px = x1; py = y1;
+  for (let i = 1; i <= segments; i++) {
+    const nx = i === segments ? x2 : x1 + dx * i + (Math.random() - 0.5) * jitter;
+    const ny = i === segments ? y2 : y1 + dy * i + (Math.random() - 0.5) * jitter;
+    ctx.lineTo(nx, ny);
+  }
+  ctx.stroke();
+  
+  // Bright center
+  ctx.shadowBlur = 4;
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = Math.max(1, thickness - 1);
+  ctx.globalAlpha = 0.6;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function spawnLightning(fromR, fromC, toR, toC, player) {
+  const from = cellCenter(fromR, fromC);
+  const to = cellCenter(toR, toC);
+  const color = player === 1 ? '#4DA8DA' : '#F5CC84';
+  const glow = player === 1 ? '#0077B5' : '#E7A33E';
+  lightningBolts.push({
+    x1: from.x, y1: from.y, x2: to.x, y2: to.y,
+    color, glow, life: 1.0, decay: 0.04 + Math.random() * 0.02,
+    thickness: 1.5 + Math.random()
+  });
+}
+
+let lightningAnimating = false;
+function animateLightning() {
+  if (!lCtx) return;
+  lCtx.clearRect(0, 0, lCanvas.width, lCanvas.height);
+  lightningBolts = lightningBolts.filter(b => b.life > 0);
+  for (const b of lightningBolts) {
+    lCtx.globalAlpha = b.life;
+    drawLightningBolt(lCtx, b.x1, b.y1, b.x2, b.y2, b.color, b.glow, b.thickness);
+    b.life -= b.decay;
+  }
+  lCtx.globalAlpha = 1;
+  if (lightningBolts.length > 0) {
+    requestAnimationFrame(animateLightning);
+  } else {
+    lightningAnimating = false;
+    lCtx.clearRect(0, 0, lCanvas.width, lCanvas.height);
+  }
+}
+
+function triggerLightning(explodingCells, player) {
+  resizeLightningCanvas();
+  for (const [er, ec] of explodingCells) {
+    for (const [nr, nc] of neighbors(er, ec)) {
+      spawnLightning(er, ec, nr, nc, player);
+      // Small branches
+      if (Math.random() > 0.5) {
+        const mid = cellCenter(er, ec);
+        const to = cellCenter(nr, nc);
+        const bx = (mid.x + to.x) / 2 + (Math.random() - 0.5) * 20;
+        const by = (mid.y + to.y) / 2 + (Math.random() - 0.5) * 20;
+        const color = player === 1 ? '#4DA8DA' : '#F5CC84';
+        const glow = player === 1 ? '#0077B5' : '#E7A33E';
+        lightningBolts.push({
+          x1: bx, y1: by,
+          x2: bx + (Math.random()-0.5)*15, y2: by + (Math.random()-0.5)*15,
+          color, glow, life: 0.7, decay: 0.06, thickness: 1
+        });
+      }
+    }
+  }
+  if (!lightningAnimating) {
+    lightningAnimating = true;
+    animateLightning();
+  }
+}
+
 async function animatedPlace(r, c, player) {
   board[r][c].count++;
   board[r][c].owner = player;
@@ -391,6 +520,9 @@ async function animatedPlace(r, c, player) {
     if (!toExplode.length) break;
     chainLen++;
     sndExplode(chainLen);
+
+    // Lightning effect!
+    triggerLightning(toExplode, player);
 
     // Create flying orbs
     const flyingOrbs = [];
@@ -428,6 +560,8 @@ async function animatedPlace(r, c, player) {
         board[nr][nc].count++;
         board[nr][nc].owner = player;
         cellEl(nr, nc).classList.add(`flash-p${player}`);
+        const nEl = cellEl(nr, nc);
+        nEl.classList.add('lightning-flash', `p${player}`);
       }
     }
     renderBoard();
@@ -435,13 +569,15 @@ async function animatedPlace(r, c, player) {
 
     // Chain popup
     if (chainLen >= 2) showChainPopup(chainLen, toExplode[0]);
-    if (chainLen >= 4) gridWrap.classList.add('shake');
+    if (chainLen >= 3) gridWrap.classList.add('shake');
 
     await delay(80);
     // Clear flash
     for (const [er, ec] of toExplode)
-      for (const [nr, nc] of neighbors(er, ec))
+      for (const [nr, nc] of neighbors(er, ec)) {
         cellEl(nr, nc).classList.remove(`flash-p1`, `flash-p2`);
+        cellEl(nr, nc).classList.remove('lightning-flash', 'p1', 'p2');
+      }
     gridWrap.classList.remove('shake');
 
     // Check game over mid-chain
