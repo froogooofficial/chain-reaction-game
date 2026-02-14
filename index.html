@@ -14,11 +14,11 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 
 /* START */
 #start-screen .logo{font-size:4rem;margin-bottom:0.5rem}
-#start-screen h1{font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem}
+#start-screen h1{font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#0077B5,#004C75);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem}
 #start-screen .sub{color:#888;font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6}
 .rules-box{background:#151515;border:1px solid #222;border-radius:16px;padding:1.2rem;margin-bottom:1.5rem;text-align:left;font-size:0.8rem;color:#aaa;line-height:1.7}
 .rules-box b{color:#fff}
-.btn-play{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;padding:1rem 3rem;font-size:1.15rem;font-weight:700;border-radius:50px;cursor:pointer;font-family:inherit;transition:transform .2s}
+.btn-play{background:linear-gradient(135deg,#0077B5,#005885);color:#fff;border:none;padding:1rem 3rem;font-size:1.15rem;font-weight:700;border-radius:50px;cursor:pointer;font-family:inherit;transition:transform .2s}
 .btn-play:active{transform:scale(.96)}
 
 /* GAME */
@@ -26,7 +26,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;padding:0 0.2rem}
 .hud-player{display:flex;align-items:center;gap:0.4rem;font-weight:700;font-size:0.85rem;padding:0.4rem 0.8rem;border-radius:10px;border:2px solid transparent;transition:all .3s}
 .hud-player.active{border-color:currentColor}
-.hud-player.p1{color:#60a5fa}.hud-player.p2{color:#f87171}
+.hud-player.p1{color:#0077B5}.hud-player.p2{color:#E7A33E}
 .hud-center{font-size:0.75rem;color:#555}
 .orb-count{font-size:1.1rem}
 
@@ -35,14 +35,14 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 .cell{background:#151515;border-radius:8px;position:relative;cursor:pointer;transition:background .15s,transform .15s;display:flex;align-items:center;justify-content:center;overflow:visible}
 .cell:hover{background:#1a1a1a}
 .cell.disabled{cursor:default;opacity:0.7}
-.cell.flash-p1{background:rgba(96,165,250,0.25)}
-.cell.flash-p2{background:rgba(248,113,113,0.25)}
+.cell.flash-p1{background:rgba(0,119,181,0.25)}
+.cell.flash-p2{background:rgba(231,163,62,0.25)}
 .cell.exploding{transform:scale(1.1);z-index:5}
 
 .orbs{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px;position:relative}
 .orb{width:12px;height:12px;border-radius:50%;transition:all .2s}
-.orb.p1{background:radial-gradient(circle at 35% 35%,#93c5fd,#3b82f6,#1d4ed8);box-shadow:0 0 6px rgba(59,130,246,0.5)}
-.orb.p2{background:radial-gradient(circle at 35% 35%,#fca5a5,#ef4444,#b91c1c);box-shadow:0 0 6px rgba(239,68,68,0.5)}
+.orb.p1{background:radial-gradient(circle at 35% 35%,#4DA8DA,#0077B5,#004C75);box-shadow:0 0 6px rgba(0,119,181,0.5)}
+.orb.p2{background:radial-gradient(circle at 35% 35%,#F5CC84,#E7A33E,#B8781E);box-shadow:0 0 6px rgba(231,163,62,0.5)}
 
 @keyframes wobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 .orb.critical{animation:wobble .4s ease-in-out infinite}
@@ -52,11 +52,11 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 .chain-popup.show{animation:chainPop .8s ease-out forwards}
 
 .flying-orb{position:absolute;width:12px;height:12px;border-radius:50%;z-index:10;pointer-events:none;transition:left .2s ease-out,top .2s ease-out}
-.flying-orb.p1{background:radial-gradient(circle at 35% 35%,#93c5fd,#3b82f6);box-shadow:0 0 8px rgba(59,130,246,0.6)}
-.flying-orb.p2{background:radial-gradient(circle at 35% 35%,#fca5a5,#ef4444);box-shadow:0 0 8px rgba(239,68,68,0.6)}
+.flying-orb.p1{background:radial-gradient(circle at 35% 35%,#4DA8DA,#0077B5);box-shadow:0 0 8px rgba(0,119,181,0.6)}
+.flying-orb.p2{background:radial-gradient(circle at 35% 35%,#F5CC84,#E7A33E);box-shadow:0 0 8px rgba(231,163,62,0.6)}
 
 .turn-banner{font-size:0.8rem;color:#555;margin-top:0.8rem;min-height:1.5rem;font-weight:600}
-.turn-banner.thinking{color:#f87171}
+.turn-banner.thinking{color:#E7A33E}
 
 @keyframes shakeGrid{0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(2px,-3px)}75%{transform:translate(-2px,1px)}}
 .grid-wrap.shake{animation:shakeGrid .25s ease-out}
@@ -69,7 +69,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 .result-stats{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.5rem}
 .stat{text-align:center}
 .stat-val{font-size:1.4rem;font-weight:800}
-.stat-val.p1{color:#60a5fa}.stat-val.p2{color:#f87171}
+.stat-val.p1{color:#0077B5}.stat-val.p2{color:#E7A33E}
 .stat-lbl{font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:1px}
 .btn-share{width:100%;padding:0.9rem;font-size:0.95rem;font-weight:700;border:none;border-radius:50px;cursor:pointer;font-family:inherit;margin-bottom:0.6rem;color:#fff;transition:transform .2s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
 .btn-share:active{transform:scale(.97)}
@@ -90,7 +90,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
   <h1>Chain Reaction</h1>
   <p class="sub">Explosive strategy in quick rounds</p>
   <div class="rules-box">
-    <b>🔵 You</b> vs <b style="color:#f87171">🔴 AI</b><br>
+    <b>🔵 You</b> vs <b style="color:#E7A33E">🟡 AI</b><br>
     Tap to place orbs in cells.<br>
     When a cell hits <b>critical mass</b>, it explodes into neighbors!<br>
     <b>Corners</b> = 2 · <b>Edges</b> = 3 · <b>Center</b> = 4<br>
@@ -105,7 +105,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
   <div class="hud">
     <div class="hud-player p1" id="hud-p1">🔵 <span class="orb-count" id="count-p1">0</span></div>
     <div class="hud-center" id="move-count">Move 1</div>
-    <div class="hud-player p2" id="hud-p2"><span class="orb-count" id="count-p2">0</span> 🔴</div>
+    <div class="hud-player p2" id="hud-p2"><span class="orb-count" id="count-p2">0</span> 🟡</div>
   </div>
   <div class="grid-wrap" id="grid-wrap">
     <div class="grid" id="grid"></div>
@@ -442,7 +442,7 @@ async function animatedPlace(r, c, player) {
 function showChainPopup(n, srcCell) {
   const popup = document.createElement('div');
   popup.className = 'chain-popup';
-  const colors = ['', '#60a5fa', '#f87171'];
+  const colors = ['', '#0077B5', '#E7A33E'];
   popup.style.color = n >= 5 ? '#fbbf24' : colors[currentPlayer] || '#fff';
   popup.textContent = n >= 5 ? `💥 ${n}x CHAIN!` : `⚡ ${n}x`;
   popup.style.left = '50%'; popup.style.top = '50%';
