@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chain Reaction — Can You Beat the AI?</title>
+<meta name="description" content="A viral strategy game. Place orbs, trigger chain reactions, outsmart the AI. Think you can win?">
+<meta property="og:title" content="Chain Reaction — Can You Beat the AI? 🧠⚡">
+<meta property="og:description" content="I just played Chain Reaction against an AI. Think you can beat my score? Try it now!">
+<meta property="og:url" content="https://froogooofficial.github.io/chain-reaction-game/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chain Reaction — Can You Beat the AI? 🧠⚡">
+<meta name="twitter:description" content="A viral strategy game. Place orbs, trigger chain reactions, outsmart the AI.">
 <title>Chain Reaction ⚡</title>
 <meta property="og:title" content="Chain Reaction ⚡">
 <meta property="og:description" content="Outsmart the AI in this explosive strategy game! Place orbs, trigger chain reactions, dominate the board.">
@@ -558,19 +567,38 @@ function endGame(winner) {
 function getShareText() {
   const won = stats.winStreak > 0;
   const lines = [
-    won ? `🏆 I beat the AI in Chain Reaction in ${stats.moves} moves!` : `💀 The AI got me in Chain Reaction after ${stats.moves} moves!`,
+    won ? `🏆 I beat the AI in Chain Reaction in just ${stats.moves} moves!` : `💀 The AI crushed me in Chain Reaction after ${stats.moves} moves!`,
     '',
+    `📊 My score:`,
     `⚡ Longest chain: ${stats.bestChain}x`,
     `💥 Orbs captured: ${stats.captured}`,
     stats.winStreak > 1 ? `🔥 Win streak: ${stats.winStreak}` : '',
     '',
-    `Can you outsmart the AI?`,
+    won ? `Think you can beat my ${stats.moves}-move win? 👀` : `I couldn't beat it — can you? 🤔`,
+    `Play now and try to beat my score! 👇`,
     `🎮 ${window.location.href}`
+  ];
+  return lines.filter(l => l !== undefined && l !== '').join('\n');
+}
+function getLinkedInText() {
+  const won = stats.winStreak > 0;
+  const lines = [
+    won ? `🏆 I just beat the AI in Chain Reaction in ${stats.moves} moves!` : `💀 The AI outsmarted me in Chain Reaction!`,
+    '',
+    `📊 My score:`,
+    `⚡ Longest chain: ${stats.bestChain}x | 💥 Orbs captured: ${stats.captured}`,
+    stats.winStreak > 1 ? `🔥 Win streak: ${stats.winStreak}` : '',
+    '',
+    won ? `Think you can beat my ${stats.moves}-move win?` : `I couldn't beat it — can you?`,
+    ``,
+    `Try it yourself 👇`
   ];
   return lines.filter(l => l !== undefined).join('\n');
 }
 function shareLinkedIn() {
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  const text = encodeURIComponent(getLinkedInText());
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, '_blank');
 }
 function shareTwitter() {
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank');
